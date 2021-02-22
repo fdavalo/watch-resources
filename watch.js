@@ -56,7 +56,7 @@ export class Watch {
     }
 
     versionStream() {
-        doStream(this.versionRequest);
+        this.doStream(this.versionRequest);
     }
 
     watchStream() {
