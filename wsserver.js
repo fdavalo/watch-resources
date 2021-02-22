@@ -5,7 +5,7 @@ import http from 'http';
 
 const webSocketServer = websocket.server;
 
-class WsServer {
+export class WsServer {
 
     constructor(port, eventHandle) {
         var server = http.createServer(function(request, response) {});
