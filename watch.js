@@ -48,10 +48,10 @@ export class Watch {
         this.watchStream();
     }
 
-    messageHandle(msg, connection) {
+    messageHandle(msg) {
 	    if (msg.request === 'all') {
 		    var message = {"request":"all", "type":this.options.resource, "data":this.data};
-		    this.wsServer.send(message, connection);
+		    this.wsServer.dispatch(message);
 	    }
     }
 
