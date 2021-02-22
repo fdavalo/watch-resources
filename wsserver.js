@@ -41,7 +41,7 @@ export class WsServer {
 	messageHandle(message) {
 		if (message.type === 'utf8') {
 			var msg = JSON.parse(message.utf8Data);
-			this.messageHandler.messageHandle(msg, connection);
+			this.messageHandler.messageHandle(msg);
 		}
 	}
 	
