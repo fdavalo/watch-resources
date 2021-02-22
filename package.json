@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "/opt/app/index.js",
+  "main": "index.js",
   "dependencies": {
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
