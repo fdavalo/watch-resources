@@ -38,24 +38,25 @@ export class WsServer {
 	    if (index > 0) this.clients.splice(index, 1);
     }
 
-    wsHandle(request) {
-	    console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
-	    var connection = request.accept(null, request.origin);
-	    var index = this.clients.push(connection) - 1;
-	    connection.on('message', function(message) {
+	messageHandle(message) {
 		if (message.type === 'utf8') {
 			var msg = JSON.parse(message.utf8Data);
 			this.messageHandler.messageHandle(msg, connection);
 		}
-	    });
-	    connection.on('error', function(connection) {
+	}
+	
+	wsClose(connection) {
 		    console.log((new Date()) + " Peer " + connection.remoteAddress + " error.");
 		    this.close(connection);
-	    });
-	    connection.on('close', function(connection) {
-		    console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
-		    this.close(connection);
-	    });
+	}
+	
+    wsHandle(request) {
+	    console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
+	    var connection = request.accept(null, request.origin);
+	    var index = this.clients.push(connection) - 1;
+	    connection.on('message', this.messageHandle.bind(this));
+	    connection.on('error', this.wsClose.bind(this));
+	    connection.on('close', this.wsClose.bind(this));
     }
 
 }
