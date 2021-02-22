@@ -7,11 +7,11 @@ const webSocketServer = websocket.server;
 
 export class WsServer {
 
-    constructor(port, eventHandle) {
+    constructor(port, messageHandler) {
 		var server = http.createServer(function(request, response) {});
 		server.listen(port, function() {});
         this.clients = [];
-        this.eventHandle = eventHandle;
+        this.messageHandler = messageHandler;
 	    this.wsServer = new webSocketServer({httpServer: server});
 	    this.wsServer.on('request', this.wsHandle.bind(this));        
     }
@@ -45,7 +45,7 @@ export class WsServer {
 	    connection.on('message', function(message) {
 		if (message.type === 'utf8') {
 			var msg = JSON.parse(message.utf8Data);
-			this.eventHandle(msg, connection);
+			this.messageHandler.messageHandle(msg, connection);
 		}
 	    });
 	    connection.on('error', function(connection) {
