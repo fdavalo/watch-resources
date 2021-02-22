@@ -8,8 +8,8 @@ const webSocketServer = websocket.server;
 export class WsServer {
 
     constructor(port, eventHandle) {
-        var server = http.createServer(function(request, response) {});
-	    server.listen(port, function() {});
+		var server = http.createServer(function(request, response) {});
+		server.listen(port, function() {});
         this.clients = [];
         this.eventHandle = eventHandle;
 	    this.wsServer = new webSocketServer({httpServer: server});
@@ -43,18 +43,18 @@ export class WsServer {
 	    var connection = request.accept(null, request.origin);
 	    var index = this.clients.push(connection) - 1;
 	    connection.on('message', function(message) {
-		    if (message.type === 'utf8') {
-			    var msg = JSON.parse(message.utf8Data);
-                this.eventHandle(msg, connection);
-		    }
+		if (message.type === 'utf8') {
+			var msg = JSON.parse(message.utf8Data);
+			this.eventHandle(msg, connection);
+		}
 	    });
 	    connection.on('error', function(connection) {
 		    console.log((new Date()) + " Peer " + connection.remoteAddress + " error.");
-		    close(connection);
+		    this.close(connection);
 	    });
 	    connection.on('close', function(connection) {
 		    console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
-		    close(connection);
+		    this.close(connection);
 	    });
     }
 
