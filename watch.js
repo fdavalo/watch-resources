@@ -43,7 +43,7 @@ export class Watch {
         for (var key in reqOptions) this.watchRequest[key] = reqOptions[key];  
         for (var key in reqOptions) this.versionRequest[key] = reqOptions[key];
 
-        this.wsServer = new WsServer (8080, this.messageHandle.bind(this));
+        this.wsServer = new WsServer (8080, this);
 
         this.watchStream();
     }
@@ -87,7 +87,7 @@ export class Watch {
 			    }
 		    }
 	    });
-	    request(req).on('close', this.watchStream).pipe(stream);
+	    request(req).on('close', this.watchStream.bind(this)).pipe(stream);
     }
 
 }
