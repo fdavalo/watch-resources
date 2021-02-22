@@ -13,7 +13,7 @@ export class WsServer {
         this.clients = [];
         this.eventHandle = eventHandle;
 	    this.wsServer = new webSocketServer({httpServer: server});
-	    this.wsServer.on('request', wsHandle);        
+	    this.wsServer.on('request', this.wsHandle);        
     }
 
     send(message, connection) {
