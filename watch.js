@@ -45,7 +45,7 @@ export class Watch {
 
         this.wsServer = new WsServer (8080, this.messageHandle);
 
-        watchStream();
+        this.watchStream();
     }
 
     messageHandle(msg, connection) {
@@ -60,13 +60,12 @@ export class Watch {
     }
 
     watchStream() {
-	    if ('resourceVersion' in this.watchRequest.qs) doStream(this.watchRequest);
-	    else versionStream();
+	    if ('resourceVersion' in this.watchRequest.qs) this.doStream(this.watchRequest);
+	    else this.versionStream();
     }
 
     doStream(req) {
 	    console.log(req);
-	    if ((this.wsServer == null) && req.qs['watch']) wsStart();
 	    var stream = new JSONStream();
 	    stream.on('data', event => {
 		    if (event) {
