@@ -1,10 +1,9 @@
 import request from 'request';
 import JSONStream from 'json-stream';
 import fs from 'fs';
-
-const wss = require('wsserver.js');
+import {WsServer} from './wsserver.js';
   
-class Watch {
+export class Watch {
 
     constructor(resource, tokendir, cadir) {
         this.data = {};
@@ -44,7 +43,7 @@ class Watch {
         for (var key in reqOptions) this.watchRequest[key] = reqOptions[key];  
         for (var key in reqOptions) this.versionRequest[key] = reqOptions[key];
 
-        this.wsServer = new wss.wsServer (8080, messageHandle);
+        this.wsServer = new WsServer (8080, messageHandle);
 
         watchStream();
     }
