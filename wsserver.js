@@ -3,17 +3,15 @@ import http from 'http';
 
 "use strict";
 
-const webSocketServer = websocket.server;
-
 export class WsServer {
 
     constructor(port, messageHandler) {
 		var server = http.createServer(function(request, response) {});
 		server.listen(port, function() {});
-        this.clients = [];
-        this.messageHandler = messageHandler;
-	    this.wsServer = new webSocketServer({httpServer: server});
-	    this.wsServer.on('request', this.wsHandle.bind(this));        
+		this.clients = [];
+		this.messageHandler = messageHandler;
+		this.wsServer = new websocket.server({httpServer: server});
+		this.wsServer.on('request', this.wsHandle.bind(this));        
     }
 
     send(message, connection) {
@@ -45,18 +43,13 @@ export class WsServer {
 		}
 	}
 	
-	wsClose(connection) {
-		    console.log((new Date()) + " Peer " + connection.remoteAddress + " error.");
-		    this.close(connection);
-	}
-	
     wsHandle(request) {
 	    console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
 	    var connection = request.accept(null, request.origin);
 	    var index = this.clients.push(connection) - 1;
 	    connection.on('message', this.messageHandle.bind(this));
-	    connection.on('error', this.wsClose.bind(this));
-	    connection.on('close', this.wsClose.bind(this));
+	    connection.on('error', this.close.bind(this));
+	    connection.on('close', this.close.bind(this));
     }
 
 }
