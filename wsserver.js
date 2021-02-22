@@ -22,7 +22,7 @@ export class WsServer {
     
     dispatch(message) {
 	    var json = JSON.stringify(message);
-	    for (var i=0; i < clients.length; i++) {
+	    for (var i=0; i < this.clients.length; i++) {
 		    this.clients[i].sendUTF(json);
 	    }
     }
@@ -30,7 +30,7 @@ export class WsServer {
     close(connection) {
 	    var index = -1;
 	    for (var i=0; i < this.clients.length; i++) {
-		    if (connection==clients[i]) {
+		    if (connection==this.clients[i]) {
 			    index = i;
 			    break;
 		    }
