@@ -43,7 +43,7 @@ export class Watch {
         for (var key in reqOptions) this.watchRequest[key] = reqOptions[key];  
         for (var key in reqOptions) this.versionRequest[key] = reqOptions[key];
 
-        this.wsServer = new WsServer (8080, this.messageHandle);
+        this.wsServer = new WsServer (8080, this.messageHandle.bind(this));
 
         this.watchStream();
     }
