@@ -1,15 +1,13 @@
 import websocket from 'websocket';
 import http from 'http';
 
-"use strict";
-
 // A web socket server that delegate message handling to its handler
 // And the handler calls it back to send or dispatch a message to clients
 // of the wb socket
 export class WsServer {
 
     constructor(port, messageHandler) {
-        var server = http.createServer(function(request, response) {});
+		var server = http.createServer();
         server.listen(port, function() {});
         this.clients = [];
         this.messageHandler = messageHandler;
@@ -23,8 +21,8 @@ export class WsServer {
     
     dispatch(message) {
         var json = JSON.stringify(message);
-        for (var i=0; i < this.clients.length; i++) {
-            this.clients[i].sendUTF(json);
+        for (let client of this.clients) {
+            client.sendUTF(json);
         }
     }
 
@@ -49,13 +47,14 @@ export class WsServer {
     wsHandle(request) {
         console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
         var connection = request.accept(null, request.origin);
-        var index = this.clients.push(connection) - 1;
+        this.clients.push(connection);
         connection.on('message', this.messageHandle.bind(this));
         connection.on('error', this.close.bind(this));
         connection.on('close', this.close.bind(this));
     }
 
-    close() {
+    end() {
         if (this.server) this.server.close();
+		this.wsServer.shutDown();
     }
 }

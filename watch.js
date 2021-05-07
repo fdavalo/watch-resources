@@ -49,11 +49,11 @@ export class Watch {
 
         // copy authents keys
         for (var key in reqOptions) this.watchRequest[key] = reqOptions[key];  
-        for (var key in reqOptions) this.versionRequest[key] = reqOptions[key];
+        for (key in reqOptions) this.versionRequest[key] = reqOptions[key];
 
         this.wsServer = null;
         this.stream = null;
-        this.end = false;
+        this.stop = false;
     }
 
     messageHandle(msg) {
@@ -71,7 +71,7 @@ export class Watch {
 
     // when resourceVersion set, watch ressources by stream mode
     watchStream() {
-        if (this.end) return;
+        if (this.stop) return;
         if ('resourceVersion' in this.watchRequest.qs) this.doStream(this.watchRequest);
         else this.versionStream();
     }
@@ -83,10 +83,9 @@ export class Watch {
             if (event) {
                 // result from get all resources, first call
                 if (event.kind && event.items) {
-                    for (var i=0;i<event.items.length; i++) {
-                        var item = event.items[i];
-                        this.data[item.metadata.uid]=item;
-                    }
+					for (let item of event.items) {
+						this.data[item.metadata.uid]=item;
+					}
                     this.watchRequest.qs.resourceVersion = event.metadata.resourceVersion;
 					this.initServer();
                 }
@@ -112,13 +111,13 @@ export class Watch {
 	}
 
 	dispatch(key, value) {
-		var message = {"request":"one", "type":this.options.resource, "key":key, "value":this.data[key]};
+		var message = {"request":"one", "type":this.options.resource, "key":key, "value":value};
 		this.wsServer.dispatch(message);
 	}
 
 
-    close() {
-        this.end = true;
-        this.wsServer.close();
+    end() {
+        this.stop = true;
+        this.wsServer.end();
     }
 }

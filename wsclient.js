@@ -1,7 +1,5 @@
 import websocket from 'websocket';
 
-"use strict";
-
 export class WsClient {
 
     constructor(messageHandler, serverUrl='ws://localhost:8080/') {
@@ -23,7 +21,6 @@ export class WsClient {
     messageHandle(message) {
         if (message.type === 'utf8') {
             var msg = JSON.parse(message.utf8Data);
-            //console.log("Received: '" + message.utf8Data + "'");
             this.messageHandler.handleMessage(msg); 
         }
     }
@@ -36,14 +33,8 @@ export class WsClient {
         console.log('WebSocket Client Connected');
         this.clientConnection = connection;
         this.messageHandler.handleConnection();
-        connection.on('error', function(error) {
-            console.log("Connection Error: " + error.toString());
-            this.disconnect();
-        });
-        connection.on('close', function() {
-            console.log('Connection Closed');
-            this.disconnect();
-        });
+        connection.on('error', this.close.bind(this));
+		connection.on('close', this.close.bind(this));
         connection.on('message', this.messageHandle.bind(this));
     }
 
@@ -67,4 +58,9 @@ export class WsClient {
     close() {
         if (this.clientConnection!=null) this.disconnect();
     }
+
+	end() {
+		this.close();
+		this.wsClient.abort();
+	}
 }
